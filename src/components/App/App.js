@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.style.scss'
+import HotelList from '../HotelList/HotelList'
 
 import hotelResultService from '../../services/hotel-result/hotel-result.service';
 
 const App = () => {
     const [hotels, setHotels] = useState([]);
+    const [filteredHotels, setFilteredHotels] = useState('')
+    const [selectedFilter, setSelectedFilter] = useState('')
+    const [searchHotel, setSearchHotel] = useState([])
 
     useEffect(() => {
         hotelResultService.get().then(response => {
@@ -12,13 +16,23 @@ const App = () => {
         })
     }, []);
 
+    const handleChange = event => {
+
+        console.log("in handle select")
+        setSearchHotel(event.target.value)
+        console.log(searchHotel)
+    }
+
+
     return (
+
+
         <div className="app-container">
             <div className="content">
                 <div>
                     <div className="filters">
                         Hotel name
-                        <input type="text" className="input" maxLength={1}/>
+                        <input type="text" className="input" maxLength={10} value={searchHotel} onChange={handleChange}/>
                         Price
                         <select name="" className="select">
                             <option value="">Recommended</option>
@@ -29,7 +43,10 @@ const App = () => {
                     </div>
                 </div>
 
-                <div className="hotel-list">
+                <HotelList hotels={hotels} />
+
+
+                {/* <div className="hotel-list">
                     {hotels.map(hotel => (
                         <div className="hotel-card" key={hotel.id}>
                             <div
@@ -56,7 +73,7 @@ const App = () => {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div> */}
             </div>
         </div>
     )
