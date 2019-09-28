@@ -17,7 +17,7 @@ const App = () => {
   }, []);
 
   const handleChange = event => {
-    console.log("in handle change");
+
     setSearchHotel(event.target.value);
   };
 
@@ -30,15 +30,17 @@ const App = () => {
     //   console.log("includes?", hotel.hotelStaticContent.name
     //   .toLowerCase()
     //   .includes(searchHotel.toLowerCase()))
-    // console.log("hotels to render", hotelsToRender)
     //   hotel.hotelStaticContent.name
     //     .toLowerCase()
     //     .includes(searchHotel.toLowerCase());
-        hotelsToRender = hotels.filter(hotel => (
-              hotel.hotelStaticContent.name
-                .toLowerCase()
-                .includes(searchHotel.toLowerCase())
-    ));
+    hotelsToRender = hotels.filter(hotel => {
+
+        return hotel.hotelStaticContent.name
+        .toLowerCase()
+        .includes(searchHotel.toLowerCase())
+
+    })
+
   };
 
   return (
@@ -68,7 +70,13 @@ const App = () => {
         </div>
 
               {hotelFiltering()}
+         {hotelsToRender.length > 0 &&
         <HotelList hotels={hotelsToRender} />
+
+        }
+        {hotelsToRender.length === 0 &&
+        <div>No hotels match your search. </div>
+        }
 
         {/* <div className="hotel-list">
                     {hotels.map(hotel => (

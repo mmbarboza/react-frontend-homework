@@ -1,6 +1,7 @@
 import React from "react";
 
 const HotelList = props => {
+  console.log("props", props)
   return (
     <div className="hotel-list">
       {props.hotels.map(hotel => (
