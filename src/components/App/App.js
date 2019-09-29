@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import "./App.style.scss";
-import HotelList from "../HotelList/HotelList";
+import React, { useState, useEffect } from 'react';
+import './App.style.scss';
+import HotelList from '../HotelList/HotelList';
 
-import hotelResultService from "../../services/hotel-result/hotel-result.service";
+import hotelResultService from '../../services/hotel-result/hotel-result.service';
 
 const App = () => {
   const [hotels, setHotels] = useState([]);
-  const [filteredHotels, setFilteredHotels] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("");
-  const [searchHotel, setSearchHotel] = useState("");
+  const [filteredHotels, setFilteredHotels] = useState('');
+  const [sortOption, setSortOption] = useState('');
+  const [searchHotel, setSearchHotel] = useState('');
 
   useEffect(() => {
     hotelResultService.get().then(response => {
@@ -17,34 +17,35 @@ const App = () => {
   }, []);
 
   const handleChange = event => {
-
     setSearchHotel(event.target.value);
+  };
+
+  const handleChangeSort = event => {
+    setSortOption(event.target.value);
   };
 
   let hotelsToRender;
   const hotelFiltering = () => {
-    //console.log("in filtering");
-    //hotelsToRender = hotels.filter(hotel => {
-    //   console.log("hotel:", hotel.hotelStaticContent.name.toLowerCase());
-    //   console.log("search content:", searchHotel);
-    //   console.log("includes?", hotel.hotelStaticContent.name
-    //   .toLowerCase()
-    //   .includes(searchHotel.toLowerCase()))
-    //   hotel.hotelStaticContent.name
-    //     .toLowerCase()
-    //     .includes(searchHotel.toLowerCase());
     hotelsToRender = hotels.filter(hotel => {
-
-        return hotel.hotelStaticContent.name
+      return hotel.hotelStaticContent.name
         .toLowerCase()
-        .includes(searchHotel.toLowerCase())
+        .includes(searchHotel.toLowerCase());
+    });
+  };
 
-    })
-
+  const sortHotels = () => {
+    if (sortOption === 'low') {
+      hotelsToRender.sort((a, b) => {
+        return a.lowestAveragePrice.amount - b.lowestAveragePrice.amount;
+      });
+    } else if (sortOption === 'high') {
+      hotelsToRender.sort((a, b) => {
+        return b.lowestAveragePrice.amount - a.lowestAveragePrice.amount;
+      });
+    }
   };
 
   return (
-    //filter function here
     //sort function here
 
     <div className="app-container">
@@ -58,54 +59,27 @@ const App = () => {
               maxLength={10}
               value={searchHotel}
               onChange={handleChange}
-              />
+            />
             Price
-            <select name="" className="select">
-              <option value="">Recommended</option>
-              <option value="">Price low-to-high</option>
-              <option value="">Price high-to-low</option>
+            <select
+              name="sortOption"
+              className="select"
+              onChange={handleChangeSort}
+            >
+              <option value="recommended">Recommended</option>
+              <option value="low">Price low-to-high</option>
+              <option value="high">Price high-to-low</option>
             </select>
             <button className="button">Reset</button>
           </div>
         </div>
 
-              {hotelFiltering()}
-         {hotelsToRender.length > 0 &&
-        <HotelList hotels={hotelsToRender} />
-
-        }
-        {hotelsToRender.length === 0 &&
-        <div>No hotels match your search. </div>
-        }
-
-        {/* <div className="hotel-list">
-                    {hotels.map(hotel => (
-                        <div className="hotel-card" key={hotel.id}>
-                            <div
-                                className="image"
-                                style={{ backgroundImage: `url(${hotel.hotelStaticContent.mainImage.url})`}}>
-                            </div>
-                            <div className="hotel-details">
-                                <div className="hotel-name">
-                                    {hotel.hotelStaticContent.name}
-                                </div>
-                                <div className="location">
-                                    {hotel.hotelStaticContent.neighborhoodName}
-                                </div>
-                            </div>
-                            <div className="price-details">
-                                <span className="price">
-                                    <span dangerouslySetInnerHTML={{ __html: hotel.lowestAveragePrice.symbol }}></span>
-                                    {hotel.lowestAveragePrice.amount}
-                                </span>
-                                <span className="rewards">
-                                    {hotel.rewards.miles} miles
-                                </span>
-                                <button className="button">Select</button>
-                            </div>
-                        </div>
-                    ))}
-                </div> */}
+        {hotelFiltering()}
+        {sortHotels()}
+        {hotelsToRender.length > 0 && <HotelList hotels={hotelsToRender} />}
+        {hotelsToRender.length === 0 && (
+          <div>No hotels match your search. </div>
+        )}
       </div>
     </div>
   );
