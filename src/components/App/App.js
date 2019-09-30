@@ -27,6 +27,10 @@ const App = () => {
     setSortOption(event.target.value);
   };
 
+  const handleClick = event => {
+      setSortOption('recommended')
+      setSearchHotel('')
+  }
   let hotelsToRender;
   const hotelFiltering = () => {
     console.log(responseStatus);
@@ -76,16 +80,18 @@ const App = () => {
               <option value="low">Price low-to-high</option>
               <option value="high">Price high-to-low</option>
             </select>
-            <button className="button">Reset</button>
+            <button className="button" onClick={handleClick}>Reset</button>
           </div>
         </div>
 
-        {responseStatus === "failed" && <div>Response failed</div>}
+        {responseStatus === "failed" && <div className ='error'>Oh no, an unexpected error occurred! Please try refreshing the page. </div>}
         {hotelFiltering()}
         {sortHotels()}
-        {hotelsToRender.length > 0 && <HotelList hotels={hotelsToRender} />}
+        {hotelsToRender.length > 0 && responseStatus === "success" && (
+          <HotelList hotels={hotelsToRender} />
+        )}
         {hotelsToRender.length === 0 && (
-          <div>No hotels match your search. </div>
+          <div className='search-error'>No hotels match your search. </div>
         )}
       </div>
     </div>

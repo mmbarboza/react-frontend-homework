@@ -2,6 +2,8 @@ import React from "react";
 
 const HotelList = props => {
   console.log("props", props)
+
+
   return (
     <div className="hotel-list">
       {props.hotels.map(hotel => (
@@ -10,8 +12,8 @@ const HotelList = props => {
             className="image"
             style={{
               backgroundImage: `url(${hotel.hotelStaticContent.mainImage.url})`
-            }}
-          ></div>
+            }} alt='No Image Found'
+           />
           <div className="hotel-details">
             <div className="hotel-name">{hotel.hotelStaticContent.name}</div>
             <div className="location">
@@ -24,7 +26,7 @@ const HotelList = props => {
                 dangerouslySetInnerHTML={{
                   __html: hotel.lowestAveragePrice.symbol
                 }}
-              ></span>
+               />
               {hotel.lowestAveragePrice.amount}
             </span>
             <span className="rewards">{hotel.rewards.miles} miles</span>
