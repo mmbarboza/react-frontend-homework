@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import './App.style.scss';
-import HotelList from '../HotelList/HotelList';
+import React, { useState, useEffect } from "react";
+import "./App.style.scss";
+import HotelList from "../HotelList/HotelList";
 
-import hotelResultService from '../../services/hotel-result/hotel-result.service';
+import hotelResultService from "../../services/hotel-result/hotel-result.service";
 
 const App = () => {
   const [hotels, setHotels] = useState([]);
-  const [filteredHotels, setFilteredHotels] = useState('');
-  const [sortOption, setSortOption] = useState('');
-  const [searchHotel, setSearchHotel] = useState('');
+  const [sortOption, setSortOption] = useState("");
+  const [searchHotel, setSearchHotel] = useState("");
+  const [responseStatus, setResponseStatus] = useState("success");
 
   useEffect(() => {
     hotelResultService.get().then(response => {
+      if (!response) {
+        setResponseStatus("failed");
+      }
       setHotels(response.results.hotels);
     });
   }, []);
@@ -26,6 +29,7 @@ const App = () => {
 
   let hotelsToRender;
   const hotelFiltering = () => {
+    console.log(responseStatus);
     hotelsToRender = hotels.filter(hotel => {
       return hotel.hotelStaticContent.name
         .toLowerCase()
@@ -34,20 +38,22 @@ const App = () => {
   };
 
   const sortHotels = () => {
-    if (sortOption === 'low') {
+    if (sortOption === "low") {
       hotelsToRender.sort((a, b) => {
         return a.lowestAveragePrice.amount - b.lowestAveragePrice.amount;
       });
-    } else if (sortOption === 'high') {
+    } else if (sortOption === "high") {
       hotelsToRender.sort((a, b) => {
         return b.lowestAveragePrice.amount - a.lowestAveragePrice.amount;
+      });
+    } else {
+      hotelsToRender.sort((a, b) => {
+        return b.rating - a.rating;
       });
     }
   };
 
   return (
-    //sort function here
-
     <div className="app-container">
       <div className="content">
         <div>
@@ -74,6 +80,7 @@ const App = () => {
           </div>
         </div>
 
+        {responseStatus === "failed" && <div>Response failed</div>}
         {hotelFiltering()}
         {sortHotels()}
         {hotelsToRender.length > 0 && <HotelList hotels={hotelsToRender} />}

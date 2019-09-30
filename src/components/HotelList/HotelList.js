@@ -28,6 +28,7 @@ const HotelList = props => {
               {hotel.lowestAveragePrice.amount}
             </span>
             <span className="rewards">{hotel.rewards.miles} miles</span>
+            <span className="rating">{hotel.hotelStaticContent.stars} stars</span>
             <button className="button">Select</button>
           </div>
         </div>
