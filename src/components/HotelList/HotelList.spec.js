@@ -50,8 +50,6 @@ describe("HotelList", () => {
     }
   ];
 
-  const noProps = []
-
   const wrapper = shallow(<HotelList hotels={props} />);
 
   it("renders the component", () => {
@@ -60,8 +58,12 @@ describe("HotelList", () => {
   it("renders the hotels passes in as props", () => {
     expect(wrapper.text().includes("Omni")).toBe(true);
   });
+});
 
+describe("HotelList with empty props", () => {
+  const wrapperNoProps = shallow(<HotelList hotels={[]} />);
 
-
-
+  it("renders an error message when there are no hotels to render", () => {
+    expect(wrapperNoProps.text().includes("No hotels")).toBe(true);
+  });
 });

@@ -4,6 +4,8 @@ import HotelList from "../HotelList/HotelList";
 
 import hotelResultService from "../../services/hotel-result/hotel-result.service";
 
+
+
 const App = () => {
   const [hotels, setHotels] = useState([]);
   const [sortOption, setSortOption] = useState("");
@@ -16,6 +18,7 @@ const App = () => {
         setResponseStatus("failed");
       }
       setHotels(response.results.hotels);
+
     });
   }, []);
 
@@ -28,12 +31,12 @@ const App = () => {
   };
 
   const handleClick = event => {
-      setSortOption('recommended')
-      setSearchHotel('')
-  }
+    setSortOption("recommended");
+    setSearchHotel("");
+  };
   let hotelsToRender;
   const hotelFiltering = () => {
-    console.log(responseStatus);
+
     hotelsToRender = hotels.filter(hotel => {
       return hotel.hotelStaticContent.name
         .toLowerCase()
@@ -41,7 +44,7 @@ const App = () => {
     });
   };
 
-  const sortHotels = () => {
+   const sortHotels = () => {
     if (sortOption === "low") {
       hotelsToRender.sort((a, b) => {
         return a.lowestAveragePrice.amount - b.lowestAveragePrice.amount;
@@ -69,6 +72,7 @@ const App = () => {
               maxLength={10}
               value={searchHotel}
               onChange={handleChange}
+              data-testid="search-hotel"
             />
             Price
             <select
@@ -80,22 +84,24 @@ const App = () => {
               <option value="low">Price low-to-high</option>
               <option value="high">Price high-to-low</option>
             </select>
-            <button className="button" onClick={handleClick}>Reset</button>
+            <button className="button" onClick={handleClick}>
+              Reset
+            </button>
           </div>
         </div>
 
-        {responseStatus === "failed" && <div className ='error'>Oh no, an unexpected error occurred! Please try refreshing the page. </div>}
+        {responseStatus === "failed" && (
+          <h3 className="error">
+            Oh no, an unexpected error occurred! Please try refreshing the page.
+          </h3>
+        )}
         {hotelFiltering()}
         {sortHotels()}
-        {hotelsToRender.length > 0 && responseStatus === "success" && (
-          <HotelList hotels={hotelsToRender} />
-        )}
-        {hotelsToRender.length === 0 && (
-          <div className='search-error'>No hotels match your search. </div>
-        )}
+        {responseStatus === "success" && <HotelList hotels={hotelsToRender} />}
       </div>
     </div>
   );
 };
+
 
 export default App;
